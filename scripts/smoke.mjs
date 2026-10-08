@@ -324,7 +324,7 @@ try {
   const cli = shell('lease.mjs', ['entities', '--json']);
   assert(JSON.parse(cli).length >= 3);
   const viewsOut = shell('view.mjs');
-  assert.match(viewsOut, /views\/week\.html/); assert.match(viewsOut, /views\/register\.html/);
+  assert.match(viewsOut, /views[\\/]week\.html/); assert.match(viewsOut, /views[\\/]register\.html/);
   const docsOut = shell('docs.mjs');
   assert.match(docsOut, /lease-schedule/); assert.match(docsOut, /month-end-journal/); assert.match(docsOut, /critical-dates-report/);
   const r = spawnSync(process.execPath, [path.join(REPO_ROOT, 'scripts', 'lease.mjs'), 'lease', '--lease=clinic'], { cwd: REPO_ROOT, env: process.env, encoding: 'utf8' });
