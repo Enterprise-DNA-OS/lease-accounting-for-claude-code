@@ -1,11 +1,33 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "lease-schedule",
+    "title": "Lease liability and right-of-use schedule",
+    "for_each": "select l.id, l.reference || ' ' || l.description as name from leases l where exists (select 1 from schedule_current s where s.lease_id = l.id)",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Lease", "sql": "select l.reference as lease, e.name as entity, o.name as lessor, l.description, l.address, l.commencement_on, l.term_end_on as lease_term_ends, l.payment_frequency as payments, l.payment_timing as paid_in from leases l join entities e on e.id = l.entity_id left join lessors o on o.id = l.lessor_id where l.id = $1" },
+      { "title": "Measurements", "note": "Each one prepared by one person and approved by another.", "sql": "select reason, effective_on, discount_rate_pct as rate_pct, liability, rou_carrying as right_of_use, liability_change, gain_loss, prepared_by, approved_by from measurements where lease_id = $1 and approved_by is not null order by period_no, approved_at" },
+      { "title": "Schedule", "sql": "select period_on as period, paid_on, opening, payment, interest, closing, depreciation, rou_closing as right_of_use from schedule_current where lease_id = $1 order by period_no" }
+    ]
+  },
+  {
+    "name": "month-end-journal",
+    "title": "Month-end lease journal",
+    "for_each": "select e.id, e.code || ' ' || to_char(date_trunc('month', current_date) - interval '1 month', 'YYYY-MM') as name from entities e",
+    "file": "name",
+    "sections": [
+      { "title": "Journal by account", "note": "Last month. Debit positive, credit negative. Key it into the ledger as one journal.", "sql": "select account_code, account_name, round(sum(amount), 2) as amount from journal_lines where entity_id = $1 and month = (date_trunc('month', current_date) - interval '1 month')::date group by account_code, account_name having round(sum(amount), 2) <> 0 order by account_code" },
+      { "title": "By lease", "sql": "select reference as lease, source, account_name, round(sum(amount), 2) as amount from journal_lines where entity_id = $1 and month = (date_trunc('month', current_date) - interval '1 month')::date group by reference, source, account_name order by reference, source, account_name" }
+    ]
+  },
+  {
+    "name": "critical-dates-report",
+    "title": "Critical dates report",
+    "for_each": "select e.id, e.code || ' ' || e.name as name from entities e",
+    "file": "name",
+    "sections": [
+      { "title": "Missed and the next 12 months", "sql": "select reference as lease, description, event, due_on, due_on - current_date as days, detail, owner from critical_dates where entity = (select code from entities where id = $1) and due_on <= current_date + 365 and (due_on >= current_date or event in ('option: last day to exercise','rent review','bank guarantee expires')) order by due_on" },
+      { "title": "Rule breaches", "sql": "select rule, record as lease, finding from compliance_findings where entity = (select code from entities where id = $1) order by severity, rule" }
     ]
   }
 ]

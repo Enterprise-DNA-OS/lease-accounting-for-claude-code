@@ -5,9 +5,44 @@
     "subtitle": "Lease Accounting for Claude Code: what needs attention, rendered by npm run view",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Rule breaches",
+        "note": "Each rule and its source is in docs/compliance.md.",
+        "sql": "select rule, record as lease, entity, finding from compliance_findings order by severity, rule, record"
+      },
+      {
+        "title": "Critical dates: missed and the next 120 days",
+        "note": "Option deadlines lose the option if missed. A CPI or market review in effect with no new rent leaves the liability understated.",
+        "sql": "select reference as lease, entity, description, event, due_on, due_on - current_date as days, detail, owner from critical_dates where due_on <= current_date + 120 and (due_on >= current_date or event in ('option: last day to exercise','rent review','bank guarantee expires')) order by due_on"
+      }
+    ]
+  },
+  {
+    "name": "register",
+    "title": "Lease register",
+    "subtitle": "Every active lease with its rent, liability and right-of-use asset today",
+    "sections": [
+      {
+        "title": "By entity",
+        "sql": "select entity, currency, count(*)::int as leases, count(*) filter (where exemption <> 'none')::int as exempt, round(sum(liability), 2) as liability, round(sum(rou), 2) as right_of_use from lease_register where status = 'active' group by entity, currency order by entity"
+      },
+      {
+        "title": "Every lease",
+        "sql": "select reference as lease, entity, asset_class, description, lessor, commencement_on, expiry_on, term_end_on, exemption, rent, per, liability, rou as right_of_use from lease_register where status = 'active' order by entity, reference"
+      }
+    ]
+  },
+  {
+    "name": "options",
+    "title": "Options and reviews",
+    "subtitle": "Every undecided option and every pending rent review",
+    "sections": [
+      {
+        "title": "Options",
+        "sql": "select l.reference as lease, e.code as entity, l.description, o.kind, o.term_months, o.exercise_by, o.exercise_by - current_date as days_left, o.reasonably_certain as in_lease_term, o.decision from options o join leases l on l.id = o.lease_id join entities e on e.id = l.entity_id where l.status = 'active' order by o.exercise_by"
+      },
+      {
+        "title": "Rent reviews waiting for the new rent",
+        "sql": "select reference as lease, entity, description, kind, effective_on, days, current_rent from review_book where new_amount is null order by effective_on"
       }
     ]
   }

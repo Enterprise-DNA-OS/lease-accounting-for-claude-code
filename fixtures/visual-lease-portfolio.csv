@@ -1,0 +1,4 @@
+Lease ID,Lease Name,Legal Entity,Landlord,Location Name,Address,State,Asset Type,Commencement Date,Expiration Date,Base Rent,Payment Frequency,Discount Rate
+VL-1001,DUN-01,Harbourside Dental Ltd,Octagon Chambers Ltd,Dunedin clinic,"14 The Octagon, Dunedin",,Real Estate,01/07/2025,30/06/2031,7650.00,Monthly,6.9
+VL-1002,TGA-01,Harbourside Dental Ltd,Bayfair Retail Ltd,Mount Maunganui clinic,"Shop 9, Bayfair Centre, Mount Maunganui",,Real Estate,01/03/2026,28/02/2032,8200.00,Monthly,
+VL-1003,FLEET-02,Harbourside Dental Ltd,Kauri Fleet Leasing Ltd,Hyundai Kona EV,,,Vehicle,01/05/2026,30/04/2029,780.00,Monthly,9.4

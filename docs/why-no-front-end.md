@@ -13,12 +13,13 @@ That layer used to be the whole product, because talking to a database was hard.
 
 ## What you give up
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
-- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
+- **Lease abstraction from PDFs.** Visual Lease reads lease documents for you. Here you read the lease and enter the dates and amounts, or ask Claude Code to read the PDF and propose the entry for you to check.
+- **A portfolio map and drag-and-drop screens.** The register is a table you ask about. `npm run view` renders it as a page.
+- **A phone app and automatic email alerts.** It runs where Claude Code runs. `/attention` is the alert; a scheduled run can email it.
+- **A vendor help desk and a SOC report.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep Visual Lease. If you need the answers more than the screens, this is cheaper, faster and yours.
+Finance teams with tens of leases, not thousands, who need the month-end journal, the year-end note and the option dates more than a screen. If a property team works in the portfolio screens all day, keep Visual Lease. If you need the answers more than the screens, this is cheaper, faster and yours.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/visual-lease
